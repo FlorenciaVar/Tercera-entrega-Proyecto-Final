@@ -1,64 +1,60 @@
-import {promises as fs} from "fs"
-import {nanoid} from "nanoid"
-import ProductManager from "./ProductManager.js";
+import { promises as fs, existsSync, writeFileSync } from 'fs'
 
-//const ProductManager = new ProductManager
-
-class CartManager {
-    constructor() {
-        this.path = "./src/models/carts.json";
+export class CartManager {
+    constructor(path) {
+        this.path = path
     }
 
-    readCarts = async () => {
-        let carts = await fs.readFile(this.path, "utf-8")
-            return JSON.parse(carts);
-    }    
-
-    writeCarts = async (carts) => {
-        await fs.writeFile(this.path, JSON.stringify(carts));
-    }    
-    exist = async (id) => {
-        let carts = await this.readCarts();
-        return carts.find(cart => cart.id === id)
-    }
-    addCarts = async () => {
-        let cartsOld = await this.readCarts()
-        let id = nanoid()
-        let cartsConcat = [{id :id, products : []}, ...cartsOld]
-        await this.writeCarts(cartsConcat)
-        return "CARRITO AGREGADO"
-    } 
-
-    getCartsById = async (id) => {
-        let cartById = await this.exist(id)
-        if(!cartById) return "CARRITO NO ENCONTRADO"
-        return cartById
+    checkFile = () => {
+        !existsSync(this.path) && writeFileSync(this.path, "[]", "utf-8");
     };
 
-    addProductInCart = async (cartId, productId) =>{
-    let cartById = await this.exist(cartId)
-    if(!cartById) return "CARRITO NO ENCONTRADO"
-    let productById = await productAll.exist(productId)
-    if(!cartById) return "PRODUCTO NO ENCONTRADO"
-    
-    let cartsALL = await this.readCarts()
-    let cartFilter = cartsALL.filter(cart => cart.id != cartId) 
+    async addCart() {
+        this.checkFile();
+        const carts = JSON.parse(await fs.readFile(this.path, 'utf-8'));
 
-    if(cartById.products.some(prod => prod.id === productId)){
-    let moreProductInCart = cartById.products.find (
-    (prod => prod.id === productId)
-    );
-    moreProductInCart.cantidad++
-    let cartsConcat = [cartById, ...cartFilter];
-    await this.writeCarts(cartsConcat);
-    return "PRODUCTO SUMADO AL CARRITO";
+        const newID = carts.length ? carts[carts.length - 1].id + 1 : 1;
+        const newCart = { products: [], id: newID };
+        carts.push(newCart);
+
+        await fs.writeFile(this.path, JSON.stringify(carts));
     }
-    cartById.products.push({id:productById.id, cantidad: 1})
-    let cartsConcat = [cartById, ...cartFilter];
-    await this.writeCarts(cartsConcat);
-    return "PRODUCTO AGREGADO AL CARRITO";     
-}; 
+
+    async getCartByID(idCart) {
+        this.checkFile();
+        const carts = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const cart = carts.find(cart => cart.id === idCart);
+        return cart ? cart.products : `Error: El Carrito ID: ${idCart} no existe`;
+    }
+
+    async addToCart(idCart, idProduct) {
+        this.checkFile();
+        const carts = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const cart = carts.find(cart => cart.id === idCart);
+
+        if (!cart) {
+            return `Error: El Carrito ID: ${idCart} no existe`;
+        }
+
+        const products = JSON.parse(await fs.readFile("./src/models/products.json", 'utf-8'));
+        const product = products.find(prod => prod.id === idProduct);
+
+        if (!product) {
+            return `Error: El producto ID: ${idProduct} no existe`
+        }
+
+        const productInCart = cart.products.find(prod => prod.idProduct === idProduct);
+        console.log(productInCart)
+
+        if (!productInCart) {
+            cart.products.push({ idProduct, quantity: 1 });
+        } else if (productInCart.quantity < product.stock) {
+            productInCart.quantity++;
+        } else {
+            return 'No hay suficiente stock';
+        }
+
+        await fs.writeFile(this.path, JSON.stringify(carts));
+        return `El producto ID: ${idProduct} ha sido añadido al carrito ID: ${idCart} `
+    }
 }
-
-
-export default CartManager

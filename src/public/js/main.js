@@ -46,7 +46,7 @@ if (window.location.pathname === '/realTimeProducts') { //Este condicional sirve
                                 <p class="card-text">Codigo: ${product.code}</p>
                                 <p class="card-text">Descripcion: ${product.description}</p>
                                 <p class="card-text">Stock: ${product.stock}</p>
-                                <p class="card-text">Precio: ${product.price} X <img src="/img/coin.png" alt="Monedas" /></p>
+                                <p class="card-text">Precio: ${product.price}</p>
                                 <p class="card-text">Status: ${product.status}</p>
                                 <p class="card-text">ID: ${product.id}</p>
                                 <button class="btn btn-warning" onClick="deleteProduct(${product.id})"> Borrar Producto </button>

@@ -1,98 +1,92 @@
-import {promises as fs} from "fs"
-import {nanoid} from "nanoid"
+import { promises as fs, existsSync, writeFileSync } from 'fs'
 
-class ProductManager {
-    constructor() {
-        this.path = "./src/models/products.json"
-}
+// Clases para Manager y Producto
+export class ProductManager {
+    constructor(path) {
+        this.path = path
+    }
 
-readProducts = async () => {
-    let products = await fs.readFile(this.path, "utf-8")
-        return JSON.parse(products);
-}
-  
-exist = async (id) => {
-    let products = await this.readProducts();
-    return products.find(prod => prod.id === id)
-}
-writeProducts = async (product) => {
-    await fs.writeFile(this.path, JSON.stringify(product));
-}
-
-addProducts = async (product) =>{
-        let productsOld = await this.readProducts()
-        product.id = nanoid(10)
-        let productAll = [...productsOld, product]
-        await this.writeProducts(productAll)
-        return "PRODUCTO AGREGADO";
+    checkFile = () => {
+        !existsSync(this.path) && writeFileSync(this.path, "[]", "utf-8");
     };
 
-getProducts = async () => {
-    return await this.readProducts()
-};
+    async addProduct(newProduct) {
 
-getProductsById = async (id) => {
-    let productsById = await this.exist(id)
-    if(!productsById) return "PRODUCTO NO ENCONTRADO"
-    return productsById
-};
+        if (Object.values(newProduct).some(value => !value)) {
+            return "Error: El producto tiene campos incompletos";
+        }
 
-updateProducts = async (id, product) => {
-    let productsById = await this.exist(id)
-    if(!productsById) return "PRODUCTO NO ENCONTRADO"
-    await this.deleteProducts(id)
-    let productsOld = await this.readProducts()
-    let products = [{...product, id : id}, ...productsOld]
-    await this.writeProducts(products)
-    return "PRODUCTO ACTUALIZADO"                           
+        this.checkFile();
+        const products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const existingProduct = products.find(prod => prod.code === newProduct.code);
 
-}
-deleteProducts = async (id) => {
-    let products = await this.readProducts();
-    let existProducts = products.some(prod => prod.id === id)
-    if (existProducts) {
-        let filterProducts = products.filter(prod => prod.id != id)
-        await this.writeProducts(filterProducts)
-        return "PRODUCTO ELIMINADO"
+        if (existingProduct) {
+            return "Error: El producto ya existe";
+        }
+
+        const newID = products.length ? products[products.length - 1].id + 1 : 1;
+        products.push({ ...newProduct, id: newID });
+        await fs.writeFile(this.path, JSON.stringify(products));
+        return "Success: El producto ha sido creado";
     }
-        return "NO EXISTE EL PRODUCTO A ELIMINAR"
+
+    async getProducts() {
+        this.checkFile();
+        const products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        return products;
+    }
+
+
+    async getProductByID(idProduct) {
+        this.checkFile();
+        const products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const product = products.find(prod => prod.id === idProduct);
+        return product ? product : `Error: El Producto ID: ${idProduct} no existe`
+    }
+
+    async updateProduct(newProduct, idProduct) {
+        if (Object.values(newProduct).some(value => !value)) {
+            return 'Error: El producto tiene campos incompletos';
+        }
+
+        this.checkFile();
+        const products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const productIndex = products.findIndex(prod => prod.id === idProduct);
+
+        if (productIndex === -1) {
+            return `Error: El Producto ID: ${idProduct} no existe`;
+        }
+
+        products[productIndex] = { ...newProduct, id: idProduct };
+        await fs.writeFile(this.path, JSON.stringify(products));
+        return `Success: El Producto ID: ${idProduct} ha sido actualizado`;
+    }
+
+    async deleteProduct(idProduct) {
+        this.checkFile();
+        const products = JSON.parse(await fs.readFile(this.path, 'utf-8'));
+        const productIndex = products.findIndex(prod => prod.id === idProduct);
+
+        if (productIndex === -1) {
+            return `Error: El Producto ID: ${idProduct} no existe`
+        }
+
+        products.splice(productIndex, 1);
+        await fs.writeFile(this.path, JSON.stringify(products));
+        return `Success: El producto con ID ${idProduct} ha sido eliminado`;
+    }
+
 }
+
+export class Product {
+    constructor(title, description, code, price, stock, category, thumbnails, status) {
+        this.title = title
+        this.description = description
+        this.code = code
+        this.price = price
+        this.stock = stock
+        this.category = category
+        this.thumbnails = thumbnails
+        this.status = status
+    }
 }
-
-
-
-
-export default ProductManager
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
