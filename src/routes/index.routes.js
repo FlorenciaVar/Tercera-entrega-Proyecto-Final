@@ -1,17 +1,17 @@
-import { Router } from "express";
-import { productManager } from "../routes/products.routes.js";
+import { Router } from 'express';
+import { __dirname } from '../path.js';
 
-export const routerIndex = Router()
+import { routerProduct } from './products.routes.js';
+import { routerCarts } from './carts.routes.js';
+import { routerChat } from './chat.routes.js';
 
-//HBS
-routerIndex.get('/', async (req,res) => {
-    const products = await productManager.getProducts()
 
-    res.render( "home", {
-        products
-    });
-});
+const router = Router()
 
-routerIndex.get('/realTimeProducts', async (req,res) => {
-    res.render( "realTimeProducts", {});
-});
+
+//Routes
+router.use('/api/products', routerProduct);
+router.use('/api/carts', routerCarts);
+router.use('/api/chat', routerChat);
+
+export default router;
