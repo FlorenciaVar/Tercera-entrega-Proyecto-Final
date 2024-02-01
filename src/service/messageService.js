@@ -1,4 +1,5 @@
-import messageModel from "../Dao/models/messagesModel.js";
+import messageModel from "../dao/models/messagesModel.js"
+
 
 export const createNewMessage = async (message) => {
     try {

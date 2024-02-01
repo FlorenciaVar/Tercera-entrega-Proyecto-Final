@@ -2,7 +2,6 @@ import cartModel from "../Dao/models/cartsModel.js";
 import productModel from "../Dao/models/productsModel.js";
 
 
-
 export const findCartById = async (id) => {
     try {
         return await cartModel.findById(id);

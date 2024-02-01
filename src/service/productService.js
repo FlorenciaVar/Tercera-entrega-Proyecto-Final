@@ -1,4 +1,4 @@
-import productModel from "../Dao/models/productsModel.js";
+import productModel from "../Dao/models/productsModel.js"
 
 
 export const  createProduct = async (product) => {
@@ -7,7 +7,12 @@ export const  createProduct = async (product) => {
         await newProduct.save()
         return newProduct
     } catch (error) {
-        console.log(error.message)
+        CustomError.createError({
+            name: "Error en la base de datos.",
+            message: "No se pudo crear el producto.",
+            cause: error.message,
+            code: EErrors.DATABASE_ERROR
+        })
     }
   };
   
@@ -16,7 +21,12 @@ export const paginateProducts = async (filters, options) => {
     try {
         return await productModel.paginate(filters, options);
     } catch (error) {
-       
+        CustomError.createError({
+            name: "Error en la base de datos.",
+            message: "No se encontraron los productos.",
+            cause: error.message,
+            code: EErrors.DATABASE_ERROR
+        })
     }
 }
 
@@ -62,7 +72,7 @@ export const deleteOneProduct = async (id) => {
 
 export const updateOneProduct = async (id, info) => {
     try {
-        return await productModel.findByIdAndUpdate(id, info, { new: true });
+        return await productModel.findByIdAndUpdate(id, info);
     } catch (error) {
         CustomError.createError({
             name: "Error en la base de datos.",

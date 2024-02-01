@@ -1,12 +1,11 @@
-import { createNewMessage, findMessages } from "../services/messageService.js";
+import { createNewMessage, findMessages } from "../service/messageService.js";
 import { io } from "../app.js";
-
 
 export const postMessage = async (req, res, next) => {
     const { message } = req.body;
     const { first_name, email } = req.user;
 
-    //req.logger.http(`Petición llegó al controlador (postMessage).`);
+    req.logger.http(`Petición llegó al controlador (postMessage).`);
 
     try {
         console.log(req.user)
@@ -17,7 +16,6 @@ export const postMessage = async (req, res, next) => {
         io.emit("messagesUpdated", messages);
 
         res.status(200).send({
-            status: "success",
             message: "Mensaje enviado exitosamente",
         });
 
@@ -29,14 +27,13 @@ export const postMessage = async (req, res, next) => {
 
 export const getMessages = async (req, res, next) => {
 
-    //req.logger.http(`Petición llegó al controlador (getMessages).`);
+    req.logger.http(`Petición llegó al controlador (getMessages).`);
 
     try {
         const messages = await findMessages();
         console.log(messages)
 
-        res.status(200).json({
-            status: "success",
+        res.status(200).json({ 
             messages: messages
         });
 
