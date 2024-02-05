@@ -1,18 +1,21 @@
 import { findCartById, updateCart } from "../service/cartService.js";
 import { findProductById } from "../service/productService.js";
 import productModel from "../Dao/models/productsModel.js";
+import cartsModel from "../Dao/models/cartsModel.js";
 
+//const data = await cartsModel();
+export const managerCarts = new cartsModel();
 
 export const getCart = async (req, res, next) => {
     const idCart = req.user.idCart;
-    req.logger.http(`Petición llegó al controlador (getCart).`);
+    //req.logger.http(`Petición llegó al controlador (getCart).`);
     try {
         const cart = await findCartById(idCart);
         const cartPopulate = await cart.populate({ path: "products.productId", model: productModel })
-        req.logger.debug(cartPopulate)
+        //req.logger.debug(cartPopulate)
         res.status(200).json({ cartPopulate });
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
@@ -22,7 +25,7 @@ export const updateCartProducts = async (req, res, next) => {
     const idCart = req.user.idCart;
     const info = req.body;
 
-    req.logger.http(`Petición llegó al controlador (updateCartProducts).`);
+    //req.logger.http(`Petición llegó al controlador (updateCartProducts).`);
 
     try {
         await updateCart(idCart, { products: info });
@@ -38,7 +41,7 @@ export const addProductToCart = async (req, res, next) => {
     const user = req.user
     const idProduct = req.params.pid;
 
-    req.logger.http(`Petición llegó al controlador (addProductToCart).`);
+    //req.logger.http(`Petición llegó al controlador (addProductToCart).`);
 
     try {
         const realProduct = await findProductById(idProduct);
@@ -58,14 +61,14 @@ export const addProductToCart = async (req, res, next) => {
                 cart.products[productIndex].quantity += 1;
             }
             const updatedCart = await updateCart(user.idCart, cart);
-            req.logger.debug(updatedCart)
+            //req.logger.debug(updatedCart)
             return res.status(200).send("Producto agregado al carrito")
         }
 
-        req.logger.warning(`El producto con id: ${idProduct} no existe en la base de datos.`)
+        //req.logger.warning(`El producto con id: ${idProduct} no existe en la base de datos.`)
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
@@ -77,7 +80,7 @@ export const updateProductQuantity = async (req, res, next) => {
     const idProduct = req.params.pid;
     const newQuantity = parseInt(quantity);
 
-    req.logger.http(`Petición llegó al controlador (updateProductQuantity).`);
+    //req.logger.http(`Petición llegó al controlador (updateProductQuantity).`);
 
     try {
         if (!newQuantity) {
@@ -116,7 +119,7 @@ export const updateProductQuantity = async (req, res, next) => {
         return res.status(200).send("Cantidad del producto actualizada")
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
@@ -125,7 +128,7 @@ export const deleteCartProducts = async (req, res, next) => {
 
     const idCart = req.user.idCart;
 
-    req.logger.http(`Petición llegó al controlador (deleteCartProducts).`);
+    //req.logger.http(`Petición llegó al controlador (deleteCartProducts).`);
 
     try {
         await updateCart(idCart, { products: [] });
@@ -141,7 +144,7 @@ export const deleteCartProduct = async (req, res, next) => {
     const idCart = req.user.idCart;
     const idProduct = req.params.pid;
 
-    req.logger.http(`Petición llegó al controlador (deleteCartProduct).`);
+    //req.logger.http(`Petición llegó al controlador (deleteCartProduct).`);
 
     try {
         const cart = await findCartById(idCart);
@@ -159,7 +162,7 @@ export const deleteCartProduct = async (req, res, next) => {
         return res.status(200).send("El producto ha sido eliminado del carrito")
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
@@ -169,7 +172,7 @@ export const createTicket = async (req, res, next) => {
     const idCart = req.user.idCart;
     const purchaser = req.user.email;
 
-    req.logger.http(`Petición llegó al controlador (createTicket).`);
+    //req.logger.http(`Petición llegó al controlador (createTicket).`);
 
     try {
         const cart = await findCartById(idCart);
@@ -206,7 +209,7 @@ export const createTicket = async (req, res, next) => {
         return res.status(200).send({message: "El Ticket ha sido creado", ticket: newTicket})
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }

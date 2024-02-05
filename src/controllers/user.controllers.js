@@ -1,4 +1,19 @@
+import userModel from "../dao/models/userModel.js";
 import { findUsers, findUserById, updateUser } from "../service/userService.js";
+import { createHash } from "../utils/bcrypt.js";
+
+const userManager = await userModel();
+export const managerUsers = new userModel();
+
+export const adminUser = {
+    first_name: "Flor",
+    last_name: "Varela",
+    email: "adminCoder@coder.com",
+    age: 28,
+    password: createHash("adminCod3r123"),
+    role: "Admin"
+
+}
 
 export const getUsers = async (req, res, next) => {
 

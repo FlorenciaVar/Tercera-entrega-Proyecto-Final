@@ -6,6 +6,7 @@ import { routerCarts } from './carts.routes.js';
 import { routerUsers } from './user.routes.js';
 import { routerChat } from './chat.routes.js';
 import { routerLoggerTest } from './loggerTest.routes.js';
+import { routerSession } from './sessions.routes.js';
 
 const router = Router()
 
@@ -15,6 +16,7 @@ router.use('/api/products', routerProduct);
 router.use('/api/carts', routerCarts);
 router.use('/api/users', routerUsers);
 router.use('/api/chat', routerChat);
+router.use('/api/session', routerSession);
 router.use('/api', routerLoggerTest)
 
 
