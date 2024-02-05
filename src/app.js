@@ -42,7 +42,7 @@ app.use(session({
       mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
       ttl: 300
   }),
-  secret: 'prueba123',
+  secret: 'adminCod3r123',
   resave: true,
   saveUninitialized: true
 }));

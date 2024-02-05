@@ -6,8 +6,8 @@ const userManager = await userModel();
 export const managerUsers = new userModel();
 
 export const adminUser = {
-    first_name: "Flor",
-    last_name: "Varela",
+    first_name: "Dino",
+    last_name: "Menichini",
     email: "adminCoder@coder.com",
     age: 28,
     password: createHash("adminCod3r123"),
