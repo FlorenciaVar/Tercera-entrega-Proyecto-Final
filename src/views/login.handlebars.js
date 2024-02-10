@@ -18,5 +18,7 @@
 
     <div class="d-flex justify-content-center">
         <a href="/register" class="btn btn-outline-warning">Registrarse</a>
+        <a href="/api/sessions/github" class="btn btn-outline-warning">Entrar con Github</a>
+
     </div>
 </div>

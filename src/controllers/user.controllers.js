@@ -1,6 +1,6 @@
 import userModel from "../dao/models/userModel.js";
 import { findUsers, findUserById, updateUser } from "../service/userService.js";
-import { createHash } from "../utils/bcrypt.js";
+import { createHash} from "../utils/bcrypt.js";
 
 const userManager = await userModel();
 export const managerUsers = new userModel();

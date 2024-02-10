@@ -2,6 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import MongoStore from 'connect-mongo';
 import session from 'express-session';
+import passport from 'passport';
+import { initializePassport } from './config/passport.config.js';
 import logger from 'morgan';
 import { __filename, __dirname } from './path.js';
 import * as path from 'path';
@@ -16,10 +18,8 @@ import { Server } from 'socket.io';
 import { routerChat } from './routes/chat.routes.js';
 import { routerSession } from './routes/sessions.routes.js';
 
-
 const app  = express()
 const PORT = 8080 
-
 
 
 //connectDB 
@@ -46,6 +46,12 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }));
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 
 
 //Routes
