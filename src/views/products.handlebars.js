@@ -18,7 +18,7 @@
                             <p class="card-text itemType">{{this.description}}</p>
                             <p class="card-text">Codigo: {{this.code}}</p>
                             <p class="card-text">Stock: {{this.stock}}</p>
-                            <p class="card-text">Precio: {{this.price}} <img src="public/img/logon.png" alt="Cervezas" /></p>
+                            <p class="card-text">Precio: {{this.price}} <img src="" alt="Cervezas" /></p>
                             <a class="btn btn-primary" href="/products/{{this._id}}" role="button">Ver Detalles</a>
                         </div>
                     </div>

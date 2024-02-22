@@ -1,28 +1,29 @@
-import messageModel from "../models/MongoDB/messagesModel.js"
+import ticketModel from "../models/MongoDB/ticketModel.js"
 import CustomError from "../utils/customErrors/CustomError.js";
 import { EErrors } from "../utils/customErrors/enums.js";
 
-export const createNewMessage = async (message) => {
+export const findTicketByCode = async (code) => {
     try {
-        const newMessage = await messageModel.create(message);
-        return newMessage;
+        const ticket = await ticketModel.findOne({ code: code });
+        return ticket;
     } catch (error) {
         CustomError.createError({
             name: "Error en la base de datos.",
-            message: "No se pudo crear el nuevo mensaje.",
+            message: "No se pudo encontrar el ticket.",
             cause: error.message,
             code: EErrors.DATABASE_ERROR
         })
     }
 }
 
-export const findMessages = async () => {
+export const createNewTicket = async (ticket) => {
     try {
-        return await messageModel.find();
+        const newTicket = await ticketModel.create(ticket);
+        return newTicket;
     } catch (error) {
         CustomError.createError({
             name: "Error en la base de datos.",
-            message: "No se encontraron los mensajes.",
+            message: "No se pudo crear el ticket.",
             cause: error.message,
             code: EErrors.DATABASE_ERROR
         })

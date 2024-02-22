@@ -1,61 +1,72 @@
+import './config/dotenv.js';
 import express from 'express';
-import mongoose from 'mongoose';
-import MongoStore from 'connect-mongo';
-import session from 'express-session';
-import passport from 'passport';
-import { initializePassport } from './config/passport.config.js';
-import logger from 'morgan';
 import { __filename, __dirname } from './path.js';
 import * as path from 'path';
+import morgan from 'morgan';
+import mongoose from 'mongoose';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
 import router from './routes/index.routes.js';
+import passport from 'passport';
 import { engine } from 'express-handlebars';
-import { Server } from 'socket.io';
+import { initializePassport } from './config/passport/passport.js';
+import { Server } from "socket.io";
 
-const app  = express()
-const PORT = 8080 
-
-//connectDB 
-
-await mongoose.connect('mongodb+srv://menichinidinopaolo:Romi6282@cluster1.zr0m6.mongodb.net/?retryWrites=true&w=majority')
-        console.log('Base de datos conectada')    
+//import { addLogger } from './utils/logger/logger.js';
 
 
-//Middlewares
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(logger('dev'))
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
-app.set('views', path.resolve(__dirname, './views'));
+//Iniciar Server
+const app = express()
 
+//MIDDLEWARES
+app.use(cookieParser())
+app.use(morgan('dev'))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
 app.use(session({
-  store: MongoStore.create({
-      mongoUrl: "mongodb+srv://menichinidinopaolo:Romi6282@cluster1.zr0m6.mongodb.net/?retryWrites=true&w=majority",
-      mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
-      ttl: 300
-  }),
-  secret: 'adminCod3r123',
-  resave: true,
-  saveUninitialized: true
+    secret: 'secret',
+    resave: false,
+    saveUninitialized: false
 }));
 
+
+//Passport
 initializePassport()
 app.use(passport.initialize())
 app.use(passport.session())
 
-//Routes
-app.use('/', express.static(__dirname + '/public'));
+//HANDLEBARS
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.resolve(__dirname, './views'));
+
+
+
+//MONGOOSE
+await mongoose.connect('mongodb+srv://menichinidinopaolo:Romi6282@cluster1.zr0m6.mongodb.net/?retryWrites=true&w=majority')
+        console.log('Base de datos conectada')
+//connectionMongoose()
+
+
+//ROUTES
 app.use('/', router);
 
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
 
+//PUERTO DEL SERVIDOR
+const port = process.env.APP_PORT || 8080;
+app.set("port", port);
+const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`));
+
+
+//Servidor Socket
 export const io = new Server(server, {
-  cors: {
-    origin: 'http://localhost:3000',
-    credentials: true, 
-   
-  },
-
+    cors: {
+        origin: "http://localhost:3000",
+        credentials: true,
+        allowedHeaders: ['Content-Type', 'Authorization'],
+        methods: 'GET, POST, PUT, DELETE',
+        optionsSuccessStatus: 200,
+        preflightContinue: false,
+        maxAge: 3600,
+    },
 });

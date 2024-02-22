@@ -1,14 +1,16 @@
 import { Router } from "express";
 import { getCart, updateCartProducts, addProductToCart, updateProductQuantity, deleteCartProducts, deleteCartProduct, createTicket } from "../controllers/cart.controllers.js";
-
+import { passportError } from "../config/middlewares/passportError.js";
+import { roleValidation } from "../config/middlewares/roleValidation.js";
 
 export const routerCarts = Router();
 
 
 //("api/carts")
-routerCarts.get('/', getCart);
-routerCarts.put('/', updateCartProducts);
-routerCarts.post('/product/:pid', addProductToCart);
-routerCarts.put('/product/:pid', updateProductQuantity);
-routerCarts.delete('/', deleteCartProducts);
-routerCarts.delete('/product/:pid',  deleteCartProduct);
+routerCarts.get('/', passportError("jwt"), roleValidation(["usuario", "premium"]), getCart);
+routerCarts.put('/', passportError("jwt"), roleValidation(["usuario", "premium"]), updateCartProducts);
+routerCarts.post('/product/:pid', passportError("jwt"), roleValidation(["usuario", "premium"]), addProductToCart);
+routerCarts.put('/product/:pid', passportError("jwt"), roleValidation(["usuario", "premium"]), updateProductQuantity);
+routerCarts.delete('/', passportError("jwt"), roleValidation(["usuario", "premium"]), deleteCartProducts);
+routerCarts.delete('/product/:pid', passportError("jwt"), roleValidation(["usuario", "premium"]), deleteCartProduct);
+routerCarts.post('/purchase', passportError("jwt"), roleValidation(["usuario", "premium"]),  createTicket);

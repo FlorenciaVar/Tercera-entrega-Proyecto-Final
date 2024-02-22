@@ -3,7 +3,7 @@
 <header class="container-fluid navContainer">
   <nav class="container navbar navbar-expand-md justify-content-around nav">
     <a class="navbar-brand" href="/products">
-      <img class="logo" src="/img/logo.png" alt="Bienvenido a Cervecería Menichini" width="224">
+      <img class="logo" src="/img/logo.png" alt="Logo Isla de marea, guías para Path of Exile" width="224">
     </a>
 
     <button class="navbar-toggler hamburguerContainer" type="button" data-bs-toggle="collapse"
@@ -24,7 +24,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link link" href="/cart/64140a8d70260b9fcabc40c3"><i class="bi bi-cart"></i></a>
+          <a class="nav-link link" href="/cart"><i class="bi bi-cart"></i></a>
         </li>
 
         <li class="nav-item">

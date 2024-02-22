@@ -1,10 +1,9 @@
 import { findCartById, updateCart } from "../service/cartService.js";
 import { findProductById } from "../service/productService.js";
-import productModel from "../Dao/models/productsModel.js";
-import cartsModel from "../Dao/models/cartsModel.js";
-
-//const data = await cartsModel();
-export const managerCarts = new cartsModel();
+import { createNewTicket } from "../service/ticketService.js";
+import productModel from "../models/MongoDB/productsModel.js";
+//import CustomError from "../utils/customErrors/CustomError.js";
+//import { EErrors } from "../utils/customErrors/enums.js";
 
 export const getCart = async (req, res, next) => {
     const idCart = req.user.idCart;
@@ -32,7 +31,7 @@ export const updateCartProducts = async (req, res, next) => {
         return res.status(200).send("Carrito actualizado")
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
@@ -61,7 +60,7 @@ export const addProductToCart = async (req, res, next) => {
                 cart.products[productIndex].quantity += 1;
             }
             const updatedCart = await updateCart(user.idCart, cart);
-            //req.logger.debug(updatedCart)
+            req.logger.debug(updatedCart)
             return res.status(200).send("Producto agregado al carrito")
         }
 

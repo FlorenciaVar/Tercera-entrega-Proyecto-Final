@@ -1,5 +1,6 @@
-import productModel from "../Dao/models/productsModel.js"
-
+import productModel from "../models/MongoDB/productsModel.js"
+import CustomError from "../utils/customErrors/CustomError.js";
+import { EErrors } from "../utils/customErrors/enums.js";
 
 export const  createProduct = async (product) => {
     try {

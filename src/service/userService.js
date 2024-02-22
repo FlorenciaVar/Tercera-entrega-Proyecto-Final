@@ -1,5 +1,6 @@
-import userModel from "../dao/models/userModel.js";
-
+import userModel from "../models/MongoDB/userModel.js";
+import CustomError from "../utils/customErrors/CustomError.js";
+import { EErrors } from "../utils/customErrors/enums.js";
 
 export const findUsers = async () => {
     try {

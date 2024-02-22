@@ -1,11 +1,17 @@
-import { comparePassword, createHash } from '../utils/bcrypt.js'
+import passport from 'passport';
+import jwt from 'jsonwebtoken';
+import { comparePassword, createHash } from '../utils/bcrypt/bcrypt.js'
 import { createUser, findUserByEmail, findUserById, updateUser } from '../service/userService.js';
+import { sendResetMail } from '../service/emailService.js';
 import { createCart } from '../service/cartService.js';
+import CustomError from "../utils/customErrors/CustomError.js";
+import { EErrors } from "../utils/customErrors/enums.js";
+import { generateUserErrorInfo } from '../utils/customErrors/info.js';
 
 
 export const loginUser = async (req, res, next) => {
 
-    req.logger.http(`Petición llegó al controlador (loginUser).`);
+    //req.logger.http(`Petición llegó al controlador (loginUser).`);
 
     try {
         passport.authenticate('jwt', { session: false }, async (err, user, info) => {
@@ -53,14 +59,14 @@ export const loginUser = async (req, res, next) => {
         })(req, res, next)
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
 
 export const registerUser = async (req, res, next) => {
 
-    req.logger.http(`Petición llegó al controlador (registerUser).`);
+    //req.logger.http(`Petición llegó al controlador (registerUser).`);
 
     try {
         const { first_name, last_name, email, age, password } = req.body;
@@ -100,14 +106,14 @@ export const registerUser = async (req, res, next) => {
         }
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 }
 
 export const logoutUser = async (req, res, next) => {
 
-    req.logger.http(`Petición llegó al controlador (logoutUser).`);
+    //req.logger.http(`Petición llegó al controlador (logoutUser).`);
 
     try {
         const token = req.cookies.jwt;
@@ -126,14 +132,14 @@ export const logoutUser = async (req, res, next) => {
             res.status(200).send({ message: 'Sesión cerrada exitosamente' });
         });
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 };
 
 export const getSession = async (req, res, next) => {
 
-    req.logger.http(`Petición llegó al controlador (getSession).`);
+    //req.logger.http(`Petición llegó al controlador (getSession).`);
 
     try {
         passport.authenticate('jwt', { session: false }, async (err, user, info) => {
@@ -166,13 +172,13 @@ export const getSession = async (req, res, next) => {
         })(req, res, next)
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 };
 
 export const sendResetToken = async (req, res, next) => {
-    req.logger.http(`Petición llegó al controlador (sendResetToken).`);
+    //req.logger.http(`Petición llegó al controlador (sendResetToken).`);
     const { email } = req.body;
     if (!email) {
         return res.status(404).json({
@@ -188,20 +194,20 @@ export const sendResetToken = async (req, res, next) => {
             });
         }
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        req.logger.debug(token)
+        //req.logger.debug(token)
         await sendResetMail(token, email);
         return res.status(200).json({
             message: "Ha sido enviado un email con el link para recuperar la contraseña"
         });
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 };
 
 export const resetUserPassword = async (req, res, next) => {
-    req.logger.http(`Petición llegó al controlador (resetUserPassword).`);
+    //req.logger.http(`Petición llegó al controlador (resetUserPassword).`);
     const { newPassword, token } = req.body;
     if (!newPassword) {
         return res.status(404).json({
@@ -211,7 +217,7 @@ export const resetUserPassword = async (req, res, next) => {
 
     try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-        req.logger.debug(decodedToken)
+        //req.logger.debug(decodedToken)
         const userId = decodedToken.userId;
         const userDB = await findUserById(userId);
         if (!userDB) {
@@ -232,7 +238,7 @@ export const resetUserPassword = async (req, res, next) => {
         });
 
     } catch (error) {
-        req.logger.error(error.message)
+        //req.logger.error(error.message)
         next(error)
     }
 };
