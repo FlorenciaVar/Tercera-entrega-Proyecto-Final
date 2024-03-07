@@ -19,7 +19,7 @@ import { Server } from "socket.io";
 const app = express()
 
 //MIDDLEWARES
-app.use(cookieParser())
+app.use(cookieParser(process.env.JWT_SECRET))
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -55,7 +55,7 @@ app.use('/', router);
 //PUERTO DEL SERVIDOR
 const port = process.env.APP_PORT || 8080;
 app.set("port", port);
-const server = app.listen(app.get("port"), () => console.log(`Server on port ${app.get("port")}`));
+const server = app.listen(app.get("port"), () => console.log(`Escuchando en el puerto:  ${app.get("port")}`));
 
 
 //Servidor Socket

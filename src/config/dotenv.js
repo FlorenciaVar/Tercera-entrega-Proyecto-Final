@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import { Command } from 'commander'
 
+
 const program = new Command()
 
 program
@@ -11,3 +12,4 @@ const environment = program.opts().mode
 
 const envFilePath = environment === "DEVELOPMENT" ? './.env.development' : './.env.production'
 dotenv.config({ path: envFilePath })
+
