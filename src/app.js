@@ -55,7 +55,7 @@ app.use('/', router);
 //PUERTO DEL SERVIDOR
 const port = process.env.APP_PORT || 8080;
 app.set("port", port);
-const server = app.listen(app.get("port"), () => console.log(`Escuchando en el puerto:  ${app.get("port")}`));
+const server = app.listen(app.get("port"), () => console.log(`Escuchando en el puerto:${app.get("port")}`));
 
 
 //Servidor Socket

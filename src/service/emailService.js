@@ -5,7 +5,7 @@ const transporter = nodemailer.createTransport({
     port: 465,
     secure: true,
     auth: {
-        user: "hubertlaylesteam@gmail.com",
+        user: "pruebamenichini@gmail.com",
         pass: process.env.EMAIL_PASS,
         authMethod: 'LOGIN'
     }
@@ -14,9 +14,9 @@ const transporter = nodemailer.createTransport({
 export const sendResetMail = async (token, email) => {
     try {
         await transporter.sendMail({
-            from: 'hubertlaylesteam@gmail.com',
+            from: 'pruebamenichini@gmail.com',
             to: email,
-            subject: "Isla de Marea - Recuperación de contraseña",
+            subject: "Cervecería Menichini - Recuperación de contraseña",
             html: `
                 <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
                 <a href="http://localhost:3000/resetpassword?token=${token}">Restablecer contraseña</a>
